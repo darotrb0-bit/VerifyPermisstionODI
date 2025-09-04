@@ -54,12 +54,17 @@ async function loadModels() {
   ]);
 }
 
+// ** UPDATED with new filtering logic **
 function populateDropdown() {
   identitySelect.innerHTML =
     '<option value="" disabled selected>--- ជ្រើសរើសអត្តលេខ ---</option>';
+
+  // CHANGED: Filter now checks if column N (index 11) is empty.
+  // The data range C to N means C=0, D=1, E=2, F=3, G=4, H=5, I=6, J=7, K=8, L=9, M=10, N=11.
   const availableIDs = allRequestsData.filter(
-    (row) => !row[10] || row[10].trim() === ""
+    (row) => !row[11] || row[11].trim() === ""
   );
+
   if (availableIDs.length === 0) {
     identitySelect.innerHTML =
       "<option disabled>គ្មានអត្តលេខដែលត្រូវផ្ទៀងផ្ទាត់</option>";
@@ -79,7 +84,6 @@ function populateDropdown() {
 async function handleIdSelection() {
   const selectedId = this.value;
   if (!selectedId) return;
-
   verificationSection.classList.remove("hidden");
   resultCard.classList.add("hidden");
   referencePhotoEl.src = "";
@@ -88,28 +92,21 @@ async function handleIdSelection() {
   startCameraBtn.disabled = true;
   stopCamera();
   showLoader("កំពុងទាញព័ត៌មានបុគ្គលិក...");
-
   try {
     const employeeRecord = allRequestsData.find((row) => row[0] === selectedId);
     employeeNameEl.textContent = `ឈ្មោះ៖ ${
       employeeRecord ? employeeRecord[1] || "មិនមាន" : "រកមិនឃើញ"
     }`;
-
     showLoader("កំពុងទាញយករូបថតពី Server...");
-
     const imageUrlRequest = `${APPS_SCRIPT_URL}?action=getImage&id=${selectedId}`;
-
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Server Timeout")), FETCH_TIMEOUT)
     );
-
     const response = await Promise.race([
       fetch(imageUrlRequest),
       timeoutPromise,
     ]);
-
     const data = await response.json();
-
     if (data.status === "success") {
       referencePhotoEl.src = data.imageData;
       referencePhotoEl.onload = async () => {
@@ -166,7 +163,17 @@ async function startCamera() {
     switchCameraBtn.classList.remove("hidden");
     captureBtn.classList.remove("hidden");
   } catch (err) {
-    alert("មិនអាចបើកកាមេរ៉ាបានទេ។");
+    console.error("Camera Error:", err);
+    if (
+      err.name === "NotAllowedError" ||
+      err.name === "PermissionDeniedError"
+    ) {
+      alert(
+        "ការអនុញ្ញាតឲ្យប្រើកាមេរ៉ាត្រូវបានបដិសេធ។\n\nសូមពិនិត្យមើលការកំណត់ (Settings) របស់ Browser រួចអនុញ្ញាតឲ្យเว็บនេះប្រើកាមេរ៉ា។"
+      );
+    } else {
+      alert(`មិនអាចបើកកាមេរ៉ាបានទេ ដោយសារមានបញ្ហា៖ ${err.name}`);
+    }
   }
 }
 
@@ -186,18 +193,13 @@ function switchCamera() {
   startCamera();
 }
 
-// ** UPDATED FUNCTION WITH IMAGE RESIZING FOR PERFORMANCE **
 async function captureAndVerify() {
   if (!referenceFaceDescriptor)
     return alert("សូមរង់ចាំរូបថតយោងដំណើរការជាមុនសិន។");
   showLoader("កំពុងផ្ទៀងផ្ទាត់...");
-
-  // --- Image Resizing for Performance ---
-  const LIVENESS_MAX_SIZE = 480; // Resize captured image to max 480px
+  const LIVENESS_MAX_SIZE = 480;
   const tempCanvas = document.createElement("canvas");
   const tempCtx = tempCanvas.getContext("2d");
-
-  // Calculate new dimensions while maintaining aspect ratio
   let newWidth = video.videoWidth;
   let newHeight = video.videoHeight;
   if (newWidth > LIVENESS_MAX_SIZE || newHeight > LIVENESS_MAX_SIZE) {
@@ -211,29 +213,21 @@ async function captureAndVerify() {
   }
   tempCanvas.width = newWidth;
   tempCanvas.height = newHeight;
-
-  // Draw the video frame onto the smaller canvas
   if (facingMode === "user") {
     tempCtx.translate(newWidth, 0);
     tempCtx.scale(-1, 1);
   }
   tempCtx.drawImage(video, 0, 0, newWidth, newHeight);
-  // --- End of Resizing ---
-
   stopCamera();
-
   try {
-    // ** Analyze the SMALLER canvas for much faster performance **
     const detection = await faceapi
       .detectSingleFace(tempCanvas)
       .withFaceLandmarks()
       .withFaceDescriptor();
     resultCard.classList.remove("hidden", "success", "fail");
-
     if (detection) {
       const faceMatcher = new faceapi.FaceMatcher([referenceFaceDescriptor]);
       const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
-
       if (bestMatch.label !== "unknown") {
         resultText.textContent = `ផ្ទៀងផ្ទាត់ជោគជ័យ! (ភាពស្រដៀងគ្នា: ${(
           (1 - bestMatch.distance) *
@@ -259,6 +253,19 @@ async function captureAndVerify() {
   }
 }
 
+function closeApplication() {
+  document.body.innerHTML = `
+        <div class="final-message-container">
+          <h1>ដំណើរការបានបញ្ចប់</h1>
+          <p>ការផ្ទៀងផ្ទាត់ និងកត់ត្រាបានជោគជ័យ។</p>
+          <p>កម្មវិធីនឹងព្យាយាមបិទដោយស្វ័យប្រវត្តិ។</p>
+        </div>
+      `;
+  setTimeout(() => {
+    window.close();
+  }, 1500);
+}
+
 async function writeTimeToSheetViaAppsScript(employeeId) {
   if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
     return alert(
@@ -275,6 +282,7 @@ async function writeTimeToSheetViaAppsScript(employeeId) {
     const result = await response.json();
     if (result.status === "success") {
       alert("បានរក្សាទុកម៉ោងចូលเรียบร้อยแล้ว!");
+      closeApplication();
     } else {
       throw new Error(result.message);
     }
@@ -283,11 +291,15 @@ async function writeTimeToSheetViaAppsScript(employeeId) {
   }
 }
 
+// ** UPDATED with new data range **
 async function initializeApp() {
   await loadModels();
   try {
     showLoader("កំពុងទាញបញ្ជីឈ្មោះ...");
-    const requestsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${REQUESTS_SHEET_ID}/values/Requests!C2:M?key=${API_KEY}`;
+
+    // CHANGED: Expanded range to include column N for filtering.
+    const requestsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${REQUESTS_SHEET_ID}/values/Requests!C2:N?key=${API_KEY}`;
+
     const response = await fetch(requestsUrl);
     if (!response.ok) throw new Error("Network response was not ok.");
     const jsonData = await response.json();
