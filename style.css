@@ -68,20 +68,20 @@ body {
 header {
   background-color: var(--color-primary);
   color: var(--color-text-light);
-  padding: var(--spacing-lg) var(--spacing-md);
+  padding: 1.25rem var(--spacing-md); /* Adjusted padding */
   text-align: center;
 }
 
 .title {
   font-family: var(--font-heading);
   margin: 0;
-  font-size: 2.25rem;
+  font-size: 1.9rem; /* Adjusted font size for mobile */
   letter-spacing: 1px;
 }
 
 .subtitle {
   margin: var(--spacing-sm) 0 0;
-  font-size: 1rem;
+  font-size: 0.95rem;
   opacity: 0.9;
 }
 
@@ -205,7 +205,7 @@ select:focus {
   object-fit: cover;
   border: 3px solid var(--color-primary);
   background-color: var(--color-surface);
-  flex-shrink: 0; /* Prevents image from shrinking */
+  flex-shrink: 0;
 }
 
 #employee-name {
@@ -225,7 +225,7 @@ select:focus {
 #video {
   display: block;
   width: 100%;
-  transform: scaleX(-1); /* Mirror effect for front camera */
+  transform: scaleX(-1);
 }
 
 #result-card {
@@ -291,26 +291,55 @@ select:focus {
 }
 
 /* ==========================================================================
-   7. Responsive Design (Media Queries) for Larger Screens
+   7. Final Success Message Styling
+   ========================================================================== */
+
+.final-message-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  text-align: center;
+  background-color: var(--color-bg);
+  padding: var(--spacing-lg);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.final-message-container h1 {
+  font-family: var(--font-heading);
+  color: var(--color-success);
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.final-message-container p {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* ==========================================================================
+   8. Responsive Design (Media Queries) for Larger Screens
    ========================================================================== */
 
 @media (min-width: 768px) {
   body {
-    align-items: center; /* Center vertically on larger screens */
+    align-items: center;
   }
 
   .title {
-    font-size: 2.75rem;
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
   }
 
   .camera-controls {
-    flex-direction: row; /* Buttons side-by-side on desktop */
-  }
-
-  #verification-section {
-    /* Example of a two-column layout on desktop */
-    /* display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-lg); */
+    flex-direction: row;
   }
 }
