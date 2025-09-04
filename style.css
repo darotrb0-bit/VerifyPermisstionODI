@@ -1,0 +1,316 @@
+/* ==========================================================================
+   1. CSS Variables and Base Setup
+   ========================================================================== */
+
+:root {
+  --font-heading: "Koulen", sans-serif;
+  --font-body: "Battambang", serif;
+
+  --color-primary: #0056b3;
+  --color-primary-dark: #004494;
+  --color-primary-light: #e6f0fa;
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+  --color-success-light: #d4edda;
+  --color-danger-light: #f8d7da;
+
+  --color-text-dark: #212529;
+  --color-text-light: #ffffff;
+  --color-text-secondary: #6c757d;
+
+  --color-bg: #f0f2f5;
+  --color-surface: #ffffff;
+  --color-border: #dee2e6;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  --border-radius: 12px;
+  --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 10px 20px rgba(0, 0, 0, 0.07);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text-dark);
+  margin: 0;
+  padding: var(--spacing-md);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   2. Main Layout and Container
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  background: var(--color-surface);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+header {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  padding: var(--spacing-lg) var(--spacing-md);
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-heading);
+  margin: 0;
+  font-size: 2.25rem;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  margin: var(--spacing-sm) 0 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+main {
+  padding: var(--spacing-lg);
+}
+
+/* ==========================================================================
+   3. Cards and Sections
+   ========================================================================== */
+
+.selection-area {
+  margin-bottom: var(--spacing-lg);
+}
+
+.info-card,
+.camera-card,
+.result-card {
+  background: #fafafa;
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+}
+
+h2 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: var(--spacing-sm);
+  font-size: 1.5rem;
+}
+
+/* ==========================================================================
+   4. Interactive Elements (Forms, Buttons)
+   ========================================================================== */
+
+label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+
+select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+.btn-secondary {
+  background-color: var(--color-text-secondary);
+  color: white;
+}
+.btn-success {
+  background-color: var(--color-success);
+  color: white;
+}
+.btn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.camera-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ==========================================================================
+   5. Specific Component Styling
+   ========================================================================== */
+
+#employee-data {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+#reference-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+  background-color: var(--color-surface);
+  flex-shrink: 0; /* Prevents image from shrinking */
+}
+
+#employee-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+#camera-container {
+  background: #000;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin-bottom: var(--spacing-lg);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#video {
+  display: block;
+  width: 100%;
+  transform: scaleX(-1); /* Mirror effect for front camera */
+}
+
+#result-card {
+  text-align: center;
+}
+#result-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+#result-card h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-family: var(--font-heading);
+}
+#result-card.success {
+  background-color: var(--color-success-light);
+  color: #155724;
+}
+#result-card.fail {
+  background-color: var(--color-danger-light);
+  color: #721c24;
+}
+
+/* ==========================================================================
+   6. Utilities and Loader
+   ========================================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+#loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border-left-color: var(--color-primary);
+  animation: spin 1s ease infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   7. Responsive Design (Media Queries) for Larger Screens
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  body {
+    align-items: center; /* Center vertically on larger screens */
+  }
+
+  .title {
+    font-size: 2.75rem;
+  }
+
+  .camera-controls {
+    flex-direction: row; /* Buttons side-by-side on desktop */
+  }
+
+  #verification-section {
+    /* Example of a two-column layout on desktop */
+    /* display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg); */
+  }
+}

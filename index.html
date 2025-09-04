@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="km">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ប្រព័ន្ធផ្ទៀងផ្ទាត់អត្តសញ្ញាណ</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Koulen&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="loader-overlay" class="hidden">
+      <div class="spinner"></div>
+      <p id="loader-text">កំពុងរៀបចំ...</p>
+    </div>
+
+    <div class="container">
+      <header>
+        <h1 class="title">ប្រព័ន្ធផ្ទៀងផ្ទាត់អត្តសញ្ញាណ</h1>
+        <p class="subtitle">
+          សូមជ្រើសរើសអត្តលេខដើម្បីចាប់ផ្តើមការផ្ទៀងផ្ទាត់បញ្ជាក់ការចូលមកវិញ
+        </p>
+      </header>
+
+      <main>
+        <div class="selection-area">
+          <label for="identity-select">ជ្រើសរើសអត្តលេខ:</label>
+          <select id="identity-select" name="identity">
+            <option value="">កំពុងទាញទិន្នន័យ...</option>
+          </select>
+        </div>
+
+        <div id="verification-section" class="hidden">
+          <div class="info-card">
+            <h2>ព័ត៌មានបុគ្គលិក</h2>
+            <div id="employee-data">
+              <img id="reference-photo" alt="Reference Photo" />
+              <p id="employee-name">ឈ្មោះ៖</p>
+            </div>
+          </div>
+
+          <div class="camera-card">
+            <h2>ផ្ទៀងផ្ទាត់ផ្ទៃមុខ</h2>
+            <div id="camera-container" class="hidden">
+              <video
+                id="video"
+                width="100%"
+                height="auto"
+                autoplay
+                muted
+              ></video>
+              <canvas id="canvas" class="hidden"></canvas>
+            </div>
+            <div class="camera-controls">
+              <button id="start-camera-btn" class="btn btn-primary" disabled>
+                បើកកាមេរ៉ា
+              </button>
+              <button id="switch-camera-btn" class="btn btn-secondary hidden">
+                ប្តូរកាមេរ៉ា
+              </button>
+              <button id="capture-btn" class="btn btn-success hidden">
+                ថត និងផ្ទៀងផ្ទាត់
+              </button>
+            </div>
+          </div>
+
+          <div id="result-card" class="result-card hidden">
+            <h3>លទ្ធផលការផ្ទៀងផ្ទាត់</h3>
+            <p id="result-text"></p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="face-api.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
